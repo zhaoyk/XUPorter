@@ -41,55 +41,100 @@ namespace UnityEditor.XCodeEditor
 		
 		public ArrayList frameworks {
 			get {
+				if (!_datastore.ContainsKey("frameworks")) {
+					return new ArrayList();
+				}
 				return (ArrayList)_datastore["frameworks"];
 			}
 		}
 		
 		public ArrayList headerpaths {
 			get {
+				if (!_datastore.ContainsKey("headerpaths")) {
+					return new ArrayList();
+				}
 				return (ArrayList)_datastore["headerpaths"];
+			}
+		}
+
+		public ArrayList frameworkSearchPaths {
+			get {
+				if (!_datastore.ContainsKey("frameworkSearchPath")) {
+					return new ArrayList();
+				}
+				return (ArrayList)_datastore["frameworkSearchPath"];
 			}
 		}
 		
 		public ArrayList files {
 			get {
+				if (!_datastore.ContainsKey("files")) {
+					return new ArrayList();
+				}
 				return (ArrayList)_datastore["files"];
 			}
 		}
 		
 		public ArrayList folders {
 			get {
+				if (!_datastore.ContainsKey("folders")) {
+					return new ArrayList();
+				}
 				return (ArrayList)_datastore["folders"];
 			}
 		}
 		
 		public ArrayList excludes {
 			get {
+				if (!_datastore.ContainsKey("excludes")) {
+					return new ArrayList();
+				}
 				return (ArrayList)_datastore["excludes"];
 			}
 		}
 
 		public ArrayList compiler_flags {
 			get {
+				if (!_datastore.ContainsKey("compiler_flags")) {
+					return new ArrayList();
+				}
 				return (ArrayList)_datastore["compiler_flags"];
 			}
 		}
 
 		public ArrayList linker_flags {
 			get {
+				if (!_datastore.ContainsKey("linker_flags")) {
+					return new ArrayList();
+				}
 				return (ArrayList)_datastore["linker_flags"];
 			}
 		}
 
 		public ArrayList embed_binaries {
 			get {
+				if (!_datastore.ContainsKey("embed_binaries")) {
+					return new ArrayList();
+				}
 				return (ArrayList)_datastore["embed_binaries"];
 			}
 		}
 
 		public Hashtable plist {
 			get {
+				if (!_datastore.ContainsKey("plist")) {
+					return new Hashtable();
+				}
 				return (Hashtable)_datastore["plist"];
+			}
+		}
+
+		public Hashtable buildConfig {
+			get {
+				if (!_datastore.ContainsKey("build_config")) {
+					return new Hashtable();
+				}
+				return (Hashtable)_datastore["build_config"];
 			}
 		}
 		

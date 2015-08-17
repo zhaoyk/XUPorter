@@ -274,7 +274,7 @@ namespace UnityEditor.XCodeEditor
 			foreach( KeyValuePair<string, XCBuildConfiguration> buildConfig in buildConfigurations ) {
 				//Debug.Log ("build config " + buildConfig);
 				XCBuildConfiguration b = buildConfig.Value;
-				if ( (string)b.data["name"] == buildConfigName || (string)b.data["name"] == "all") {
+				if ( (string)b.data["name"] == buildConfigName || buildConfigName == "all") {
 					//Debug.Log ("found " + buildConfigName + " config");
 					buildConfig.Value.overwriteBuildSetting(settingName, newValue);
 					modified = true;
@@ -724,13 +724,16 @@ namespace UnityEditor.XCodeEditor
 				string[] filename = framework.Split( ':' );
 				bool isWeak = ( filename.Length > 1 ) ? true : false;
 				string completePath = System.IO.Path.Combine( "System/Library/Frameworks", filename[0] );
+				if (filename[0].Contains("/") || filename[0].Contains("\\")) {
+					completePath = System.IO.Path.Combine( Application.dataPath, filename[0] );
+				}
 				this.AddFile( completePath, frameworkGroup, "SDKROOT", true, isWeak );
 			}
 
 			Debug.Log( "Adding files..." );
 			foreach( string filePath in mod.files ) {
-				string absoluteFilePath = System.IO.Path.Combine( mod.path, filePath );
-				this.AddFile( absoluteFilePath, modGroup );
+//				string absoluteFilePath = System.IO.Path.Combine( mod.path, filePath );
+				this.AddFile( filePath, modGroup );
 			}
 
 			Debug.Log( "Adding embed binaries..." );
@@ -764,6 +767,17 @@ namespace UnityEditor.XCodeEditor
 				}
 			}
 
+			Debug.Log( "Adding framework search path..." );
+			foreach( string frameworkSearchPath in mod.frameworkSearchPaths ) {
+				if (frameworkSearchPath.Contains("$(inherited)")) {
+					Debug.Log ("not prepending a path to " + frameworkSearchPath);
+					this.AddFrameworkSearchPaths(frameworkSearchPath);
+				} else {
+					string absoluteHeaderPath = System.IO.Path.Combine( Application.dataPath, frameworkSearchPath );
+					this.AddFrameworkSearchPaths( absoluteHeaderPath );
+				}
+			}
+
 			Debug.Log( "Adding compiler flags..." );
 			foreach( string flag in mod.compiler_flags ) {
 				this.AddOtherCFlags( flag );
@@ -772,6 +786,12 @@ namespace UnityEditor.XCodeEditor
 			Debug.Log( "Adding linker flags..." );
 			foreach( string flag in mod.linker_flags ) {
 				this.AddOtherLinkerFlags( flag );
+			}
+
+			Debug.Log( "Adding build config" );
+			foreach( DictionaryEntry entry in mod.buildConfig)
+			{
+				this.overwriteBuildSetting((string)entry.Key, (string)entry.Value);
 			}
 
 			Debug.Log ("Adding plist items...");
